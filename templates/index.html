@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <title>Flaskのテストサイト</title>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/d3.v3.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/epoch.min.js') }}" charset="utf-8"></script>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/normalize.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/skeleton.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/epoch.min.css') }}">
+</head>
+
+<body>
+    <h1>Arduinoから受け取ったデータを表示する</h1>
+    <h2>空気の状況</h2>
+    <div class="row box1" id="air">
+        <div class="four columns">
+            <div class="box1 container">
+                <h4>栽培装置付近の気温・湿度・CO2濃度</h4>
+                <div class="box1 air-temp">
+                    <span>気温の瞬時値（℃）</span>
+                    <div class="box1 air-temp value"></div>
+                </div>
+                <div class="box1 co2">
+                    <span>CO2濃度の瞬時値（ppm）</span>
+                    <div class="box1 co2 value"></div>
+                </div>
+                <div class="box1 humidity">
+                    <span>湿度の瞬時値（%）</span>
+                    <div class="box1 humidity value"></div>
+                </div>
+            </div>
+        </div>
+        <div class="eight columns">
+            <ul>
+                <li class="box1 air-temp">温度のグラフ</li>
+                <div class="epoch air-temp" style="height: 150px;"></div>
+                <li class="box1 co2">CO2のグラフ</li>
+                <div class="epoch co2" style="height: 150px;"></div>
+                <li class="box1 humidity">湿度のグラフ</li>
+                <div class="epoch humidity" style="height: 150px;"></div>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row" id="data">
+        <div class="four columns">
+            <div class="container box1" id="left">
+                <h3>左側のbox</h3>
+                <div class="box1 img-with-text">
+                    <img src="{{ url_for('static', filename='img/water.png') }}">
+                    <p>neutral f-NBD</p>
+                </div>
+                <div class="box1 pH">
+                    <span>pHの瞬時値</span>
+                    <div class="box1 pH value"></div>
+                </div>
+                <div class="box1 temp">
+                    <span>温度の瞬時値（℃）</span>
+                    <div class="box1 temp value"></div>
+                </div>
+                <div class="box1 PumpAcid">
+                    <span>過去のacidポンプの稼働状況</span>
+                    <div class="box1 PumpAcid value"></div>
+                </div>
+                <div class="box1 PumpAlkali">
+                    <span>過去のalkaliポンプの稼働状況</span>
+                    <div class="box1 PumpAlkali value"></div>
+                </div>
+                <h4 class="pH">pHのグラフ</h4>
+                <div class="box1 epoch pH" style="height: 300px;"></div>
+                <h4 class="temp">温度のグラフ</h4>
+                <div class="box1 epoch temp" style="height: 300px;"></div>
+                <h4 class="pump">Acid pumpのグラフ</h4>
+                <div class="box1 epoch PumpAcid" style="height: 300px;"></div>
+                <h4 class="pump">Alkali pumpのグラフ</h4>
+                <div class="box1 epoch PumpAlkali" style="height: 300px;"></div>
+            </div>
+        </div>
+        <div class="four columns">
+            <div class="container box2" id="center">
+                <h3>真ん中のbox</h3>
+                <div class="box2 img-with-text">
+                    <img src="{{ url_for('static', filename='img/water.png') }}">
+                    <p>acid f-NBD</p>
+                </div>
+                <div class="box2 pH">
+                    <span>pHの瞬時値</span>
+                    <div class="box2 pH value"></div>
+                </div>
+                <div class="box2 temp">
+                    <span>温度の瞬時値（℃）</span>
+                    <div class="box2 temp value"></div>
+                </div>
+                <div class="box2 PumpAcid">
+                    <span>過去のacidポンプの稼働状況</span>
+                    <div class="box2 PumpAcid value"></div>
+                </div>
+                <div class="box2 PumpAlkali">
+                    <span>過去のalkaliポンプの稼働状況</span>
+                    <div class="box2 PumpAlkali value"></div>
+                </div>
+                <h4 class="pH">pHのグラフ</h4>
+                <div class="box2 epoch pH" style="height: 300px;"></div>
+                <h4 class="temp">温度のグラフ</h4>
+                <div class="box2 epoch temp" style="height: 300px;"></div>
+                <h4 class="pump">Acid pumpのグラフ</h4>
+                <div class="box2 epoch PumpAcid" style="height: 300px;"></div>
+                <h4 class="pump">Alkali pumpのグラフ</h4>
+                <div class="box2 epoch PumpAlkali" style="height: 300px;"></div>
+            </div>
+        </div>
+        <div class="four columns">
+            <div class="box3 container" id="center">
+                <h3>右側のbox</h3>
+                <div class="box3 img-with-text">
+                    <img src="{{ url_for('static', filename='img/water.png') }}">
+                    <p>Commercial solution</p>
+                </div>
+                <div class="box3 pH">
+                    <span>pHの瞬時値</span>
+                    <div class="box3 pH value"></div>
+                </div>
+                <div class="box3 temp">
+                    <span>温度の瞬時値（℃）</span>
+                    <div class="box3 temp value"></div>
+                </div>
+                <div class="box3 PumpAcid">
+                    <span>過去のacidポンプの稼働状況</span>
+                    <div class="box3 PumpAcid value"></div>
+                </div>
+                <div class="box3 PumpAlkali">
+                    <span>過去のalkaliポンプの稼働状況</span>
+                    <div class="box3 PumpAlkali value"></div>
+                </div>
+                <h4 class="pH">pHのグラフ</h4>
+                <div class="box3 epoch pH" style="height: 300px;"></div>
+                <h4 class="temp">温度のグラフ</h4>
+                <div class="box3 epoch temp" style="height: 300px;"></div>
+                <h4 class="pump">Acid pumpのグラフ</h4>
+                <div class="box3 epoch PumpAcid" style="height: 300px;"></div>
+                <h4 class="pump">Alkali pumpのグラフ</h4>
+                <div class="box3 epoch PumpAlkali" style="height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='scripts/main.js') }}"></script>
+</body>
+
+</html>
