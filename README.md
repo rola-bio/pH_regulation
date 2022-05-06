@@ -16,7 +16,7 @@ DFRobotsのpHセンサで取得したデータはArduinoを通じてシリアル
 ブラウザにデータをリアルタイムで反映します。
 # DEMO
 
-![Demo Image 3](/static/image/concept.png)
+![Demo Image 3](/static/img/concept.png)
 
 # Features
 
