@@ -21,7 +21,7 @@ waters = [water1,water2,water3]
 
 print("working")
 
-log_interval = 30
+log_interval = 60
 acid_data = {"box1":0,"box2":0,"box3":0} # acidpumpの稼働時間
 alkali_data = {"box1":0,"box2":0,"box3":0} # alkalipumpの稼働時間
 
@@ -31,24 +31,29 @@ except FileExistsError:
     pass
 
 
-def log_waters(waters):  # watersの結果をただ保存する関数
-    time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    for water in waters:
-        water.water_results = pd.DataFrame(water.water_results)  # 結果をdf化
-        if water.air_results:
-            water.air_results = pd.DataFrame(
-                water.air_results)  # 空気関連のデータがあれば、df化して
-            water.air_results.to_csv(
-                "result/"+str(time)+"air_result.csv")  # csvで保存
-    water_df = pd.concat(
-        [water1.water_results, water2.water_results, water3.water_results], axis=0)
-    water_df.to_csv("result/"+str(time)+"water_result.csv")
-    print("logged")
+def log_waters(waters, path=None):  # watersの結果をただ保存する関数
+    time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
+    if path:
+        file_path = "result/"+str(path)+str(time)+"water_result.csv"
+    else:
+        file_path = "result/"+str(time)+"water_result.csv"
 
+    for water in waters:
+        water.water_df = pd.DataFrame(water.water_results)  # 結果をdf化
+        water.water_results = list() # resultsを初期化
+        if water.air_results:
+            water.air_df = pd.DataFrame(
+                water.air_results)  # 空気関連のデータがあれば、df化して
+            water.air_df.to_csv(
+                "result/"+str(time)+"air_result.csv")  # csvで保存
+            water.air_results = list() # resultsを初期化
+    water_df = pd.concat(
+        [water1.water_df, water2.water_df, water3.water_df], axis=0)
+    water_df.to_csv(file_path)
+    print("logged")
 
 # サーバーを立ち上げる
 app = Flask(__name__)
-
 
 @app.route('/')
 # 多分これはデコレータ？ファイルかなんかのwdを設定してそう。
@@ -83,13 +88,14 @@ def test():
                         alkali_data[key] +=  web_data[key]["PumpAlkali"]# acidpumpの稼働時間を積算
                         web_data[key]["PumpAlkali"] = alkali_data[key]
                 ws.send(json.dumps(web_data)) # データをフロントになげる
-                print(web_data["box1"],web_data["box2"],web_data["box3"])
+                print(datetime.datetime.now().strftime(
+                    '%Y-%m-%d %H:%M'),web_data["box1"],web_data["box2"],web_data["box3"])
 
                 t1 = time.time() # 時間を取得
                 if (t1-t0) > log_interval:  # インターバル時間を過ぎたら
                     print("log")
                     for water in waters:
-                        water.organize() # パイル一時データを平均化して、記録用の辞書に保存、
+                        water.organize() # パイルデータを平均化して、記録用の辞書に保存、
                     t0 = time.time() # t0を初期化
 
                 if day != datetime.datetime.now().day: # the day change,
@@ -113,9 +119,16 @@ def test():
                 """
 
             except KeyboardInterrupt:
-                print("Something happen..")
-                log_waters(waters)
+                print("Manually suspended")
+                log_waters(waters,"ctrl-C")
                 break
+
+            except:
+                print("Something happen..")
+                log_waters(waters,"error")
+                import traceback
+                traceback.print_exc()
+                continue
     return
 
 

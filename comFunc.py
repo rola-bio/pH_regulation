@@ -42,7 +42,9 @@ class SerialData():
         self.temp_results = list() # データの一次保存
         self.ser = serial.Serial(com, 115200)
         self.water_results = list() # 加工後のデータを保存するリスト
+        self.water_df = None # 結果保存のdf
         self.air_results = list() # 加工後のデータを保存するリスト
+        self.air_df = None # 結果保存のdf
         self.air = air
         print(self.ser.readline())  # 最初のデータをprint
         print(self.ser.readline())  # もう一回print

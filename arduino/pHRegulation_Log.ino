@@ -21,7 +21,7 @@
 // define control status
 #define acidMOTOR 5           // HCl motor output to Arduino Digital Output 6
 #define alkaliMOTOR 6         // NaOH motor output to Arduino Digital Output 7
-#define controlInterval 60000 //  control every 60seconds
+#define controlInterval 1800000 //  control every 30minutes = 1,800,000 ms
 #define SV 6.0                // SetValue
 #define SR 0.2                // SetRange
 #define PR 2                // Proportinal Range
@@ -85,10 +85,11 @@ void loop(void)
     //ここからpH制御にする
     if (millis() - controlTime > controlInterval)
     {
-        power = ((fabs(SV - pHValue) - (SR / 2)) / PR) / 2; // pump作動時間を計算,最大値を55%にするために,最後2で割った
-        if (power > 0.5)
+        power = ((fabs(SV - pHValue) - (SR / 2)) / PR) / 30;
+        // pump作動時間を計算,30分のインターバルのうち1分だけ稼働させたいので、30で割る
+        if (power > 0.03)
         {
-            power = 0.5; //  powerは1（25%）未満
+            power = 0.03; //  powerは0.03（3%）未満
         }
         Serial.print("Pump");
         if (pHValue > SV) //  アルカリのとき
